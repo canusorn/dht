@@ -27,7 +27,7 @@ void setup() {
 
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
   display.clearDisplay();
-  display.setTextSize(1);               // Normal 1:1 pixel scale
+  display.setTextSize(2);               // Normal 1:1 pixel scale
   display.setTextColor(SSD1306_WHITE);  // Draw white text
   display.setCursor(0, 0);              // Start at top-left corner
   display.println(F("DHT sensor"));
@@ -43,6 +43,15 @@ void loop() {
   float h = dht.readHumidity();
   float t = dht.readTemperature();
 
+  display.clearDisplay();
+  display.setTextSize(2);               // Normal 1:1 pixel scale
+  display.setTextColor(SSD1306_WHITE);  // Draw white text
+  display.setCursor(0, 0);              // Start at top-left corner
+  display.println(F("DHT sensor"));
+  display.setCursor(0, 25);
+  display.println("T : " + String(t,1) + " C");
+  display.println("H : " + String(h,1) + " %");
+  display.display();
 
   Serial.print(F("Humidity: "));
   Serial.print(h);
