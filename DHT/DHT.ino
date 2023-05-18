@@ -21,15 +21,20 @@ V1 - humid
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <TridentTD_LineNotify.h>
 
+// ตั้งค่า
 char ssid[] = "G6PD_2.4G";
 char pass[] = "570610193";
+#define LINE_TOKEN "7m68381D2LS8ByeflY4rVEf9pPEXMXllsuFRNGBTFfG"
+#define TEMP_H 35
+#define HUMID_H 80
 
 #define SCREEN_WIDTH 128  // OLED display width, in pixels
 #define SCREEN_HEIGHT 64  // OLED display height, in pixels
 
 #define OLED_RESET -1        // Reset pin # (or -1 if sharing Arduino reset pin)
-#define SCREEN_ADDRESS 0x3C  ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
+#define SCREEN_ADDRESS 0x3C  
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define DHTPIN D7
@@ -40,8 +45,10 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 DHT dht(DHTPIN, DHTTYPE);
 
 unsigned long previousMillis = 0;
+bool tempNotiState, humidNotiState;
 
 void setup() {
+
   Serial.begin(115200);
 
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
@@ -55,6 +62,9 @@ void setup() {
   dht.begin();
 
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+
+  // กำหนด Line Token
+  LINE.setToken(LINE_TOKEN);
 }
 
 void loop() {
@@ -82,6 +92,26 @@ void loop() {
     Serial.print(F("%  Temperature: "));
     Serial.print(t);
     Serial.println(F("°C"));
+
+    // แจ้งเตือนอุณหภูมิผ่านไลน์
+    if (t >= TEMP_H) {
+      if (!tempNotiState) {
+        LINE.notify("อุณหภูมิเกินกำหนด อุณหภูมิขณะนี้ " + String(t) + " C");
+        tempNotiState = 1;
+      }
+    } else if (tempNotiState) {
+      tempNotiState = 0;
+    }
+
+    // แจ้งเตือนความชื้นผ่านไลน์
+    if (h >= HUMID_H) {
+      if (!humidNotiState) {
+        LINE.notify("ความชื้นเกินกำหนด ความชื้นขณะนี้ " + String(h) + " %");
+        humidNotiState = 1;
+      }
+    } else if (humidNotiState) {
+      humidNotiState = 0;
+    }
 
     Blynk.virtualWrite(V0, t);
     Blynk.virtualWrite(V1, h);
