@@ -26,8 +26,8 @@ V1 - humid
 #include <WiFiClientSecureBearSSL.h>
 
 // ตั้งค่า
-char ssid[] = "G6PD_2.4G";
-char pass[] = "570610193";
+char ssid[] = "WIFI_2.4G";
+char pass[] = "PASSWORD";
 #define LINE_TOKEN "7m68381D2LS8ByeflY4rVEf9pPEXMXllsuFRNGBTFfG"
 #define TEMP_H 35
 #define HUMID_H 80
