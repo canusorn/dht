@@ -39,6 +39,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 DHT dht(DHTPIN, DHTTYPE);
 
+unsigned long previousMillis = 0;
+
 void setup() {
   Serial.begin(115200);
 
@@ -58,27 +60,30 @@ void setup() {
 void loop() {
   Blynk.run();
 
-  delay(2000);
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= 5000) {
+    previousMillis = currentMillis;
 
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
+    float h = dht.readHumidity();
+    float t = dht.readTemperature();
 
-  display.clearDisplay();
-  display.setTextSize(2);               // Normal 1:1 pixel scale
-  display.setTextColor(SSD1306_WHITE);  // Draw white text
-  display.setCursor(0, 0);              // Start at top-left corner
-  display.println(F("DHT sensor"));
-  display.setCursor(0, 25);
-  display.println("T : " + String(t, 1) + " C");
-  display.println("H : " + String(h, 1) + " %");
-  display.display();
+    display.clearDisplay();
+    display.setTextSize(2);               // Normal 1:1 pixel scale
+    display.setTextColor(SSD1306_WHITE);  // Draw white text
+    display.setCursor(0, 0);              // Start at top-left corner
+    display.println(F("DHT sensor"));
+    display.setCursor(0, 25);
+    display.println("T : " + String(t, 1) + " C");
+    display.println("H : " + String(h, 1) + " %");
+    display.display();
 
-  Serial.print(F("Humidity: "));
-  Serial.print(h);
-  Serial.print(F("%  Temperature: "));
-  Serial.print(t);
-  Serial.println(F("°C"));
+    Serial.print(F("Humidity: "));
+    Serial.print(h);
+    Serial.print(F("%  Temperature: "));
+    Serial.print(t);
+    Serial.println(F("°C"));
 
-  Blynk.virtualWrite(V0, t);
-  Blynk.virtualWrite(V1, h);
+    Blynk.virtualWrite(V0, t);
+    Blynk.virtualWrite(V1, h);
+  }
 }
