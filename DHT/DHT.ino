@@ -1,11 +1,26 @@
 /*
-// REQUIRES the following Arduino libraries:
-// - DHT Sensor Library: https://github.com/adafruit/DHT-sensor-library
-// - Adafruit Unified Sensor Lib: https://github.com/adafruit/Adafruit_Sensor
+ REQUIRES the following Arduino libraries:
+ - DHT Sensor Library ติดตึั้งจาก library manager
+ - Adafruit Unified Sensor Lib ติดตึั้งจาก library manager
+ - Adafruit_SSD1306 ติดตึั้งจาก library manager
+ - Blynk  ติดตึั้งจาก library manager
+
 
 Blynk virtual pin
 V0 - temp
 V1 - humid
+
+การต่อวงจร
+DHT22 -> ESP8266
+  +  ->  3v
+  -  ->  gnd
+data ->  D7
+
+oled -> ESP8266
+SCK ->  D1
+SCL ->  D2
+VCC ->  3V
+GND ->  GND
 
 */
 #define BLYNK_PRINT Serial
@@ -42,7 +57,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define DHTPIN D7
 
-#define DHTTYPE DHT11  // DHT 11
+#define DHTTYPE DHT22  // DHT 11
 // #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 
 DHT dht(DHTPIN, DHTTYPE);
